@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements
         mErrorMessageDisplay = findViewById(R.id.error_message_display);
 
         GridLayoutManager layoutManager
-                = new GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false);
+                = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
         LoaderCallbacks<List<Movie>> callback = MainActivity.this;
         Bundle bundleForLoader = null;
 
-        LoaderManager.getInstance(this).initLoader(loaderId, bundleForLoader, callback);
+        getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
     }
 
     @NonNull

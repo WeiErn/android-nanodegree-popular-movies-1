@@ -55,11 +55,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mMovieTextView;
+        public final TextView mMovieTitleTextView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mMovieTextView = view.findViewById(R.id.movie_title);
+            mMovieTitleTextView = view.findViewById(R.id.movie_title);
             view.setOnClickListener(this);
         }
 
@@ -84,7 +84,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(@NonNull MovieAdapter.MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         Movie movieSelected = mMovieData.get(position);
-        movieAdapterViewHolder.mMovieTextView.setText(movieSelected.toString());
+        movieAdapterViewHolder.mMovieTitleTextView.setText(movieSelected.title);
     }
 
     @Override
