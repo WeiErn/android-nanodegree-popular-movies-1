@@ -6,8 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.udacity.popular_movies_1.R;
 
 import java.util.List;
@@ -55,11 +57,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView mMovieTitleTextView;
+//        public final TextView mMovieTitleTextView;
+        public final ImageView mMoviePosterImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mMovieTitleTextView = view.findViewById(R.id.movie_title);
+//            mMovieTitleTextView = view.findViewById(R.id.movie_title);
+            mMoviePosterImageView = view.findViewById(R.id.movie_poster);
             view.setOnClickListener(this);
         }
 
@@ -84,7 +88,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(@NonNull MovieAdapter.MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         Movie movieSelected = mMovieData.get(position);
-        movieAdapterViewHolder.mMovieTitleTextView.setText(movieSelected.title);
+//        movieAdapterViewHolder.mMovieTitleTextView.setText(movieSelected.title);
+//        movieAdapterViewHolder.mMoviePosterImageView.setImageURI();
+        Picasso.get().load(movieSelected.getMoviePoster()).into(movieAdapterViewHolder.mMoviePosterImageView);
     }
 
     @Override

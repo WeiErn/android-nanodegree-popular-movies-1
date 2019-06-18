@@ -3,17 +3,43 @@ package com.udacity.popular_movies_1.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class Movie implements Parcelable {
+    private static final String baseUrl = "http://image.tmdb.org/t/p/w500";
+    private static final SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat outputDateFormat = new SimpleDateFormat("d MMMM yyyy");
     String title;
     String releaseDate;
     String moviePoster; // url
-    double voteAverage;
+    String voteAverage;
     String plotSypnosis;
 
-    public Movie(String title, String releaseDate, String moviePoster, double voteAverage, String plotSypnosis) {
+    public String getTitle() {
+        return title;
+    }
+
+    public String getReleaseDate() throws ParseException {
+        return outputDateFormat.format(inputDateFormat.parse(releaseDate));
+    }
+
+    public String getMoviePoster() {
+        return moviePoster;
+    }
+
+    public String getVoteAverage() {
+        return voteAverage;
+    }
+
+    public String getPlotSypnosis() {
+        return plotSypnosis;
+    }
+
+    public Movie(String title, String releaseDate, String moviePoster, String voteAverage, String plotSypnosis) {
         this.title = title;
         this.releaseDate = releaseDate;
-        this.moviePoster = moviePoster;
+        this.moviePoster = baseUrl + moviePoster;
         this.voteAverage = voteAverage;
         this.plotSypnosis = plotSypnosis;
     }
@@ -22,7 +48,7 @@ public class Movie implements Parcelable {
         title = in.readString();
         releaseDate = in.readString();
         moviePoster = in.readString();
-        voteAverage = in.readDouble();
+        voteAverage = in.readString();
         plotSypnosis = in.readString();
     }
 
@@ -36,11 +62,11 @@ public class Movie implements Parcelable {
         dest.writeString(title);
         dest.writeString(releaseDate);
         dest.writeString(moviePoster);
-        dest.writeDouble(voteAverage);
+        dest.writeString(voteAverage);
         dest.writeString(plotSypnosis);
     }
 
-    public final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
         @Override
         public Movie createFromParcel(Parcel parcel) {
             return new Movie(parcel);
