@@ -23,6 +23,8 @@ import com.udacity.popular_movies_1.utils.JsonUtils;
 import com.udacity.popular_movies_1.utils.NetworkUtils;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
     private static final int MOVIE_LOADER_ID = 0;
+    private List<Movie> mMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> movies) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
+        mMovies = movies;
         mMovieAdapter.setMovieData(movies);
         if (null == movies) {
             showErrorMessage();
@@ -149,18 +153,24 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_sort_rated) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_sort_rated:
+                sortByRatingsDescending();
+                mMovieAdapter.setMovieData(mMovies);
+                return true;
+            case R.id.action_sort_popular:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        if (id == R.id.action_sort_popular) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
-
+    private void sortByRatingsDescending() {
+        Collections.sort(mMovies, new Comparator<Movie>() {
+            @Override
+            public int compare(Movie movie1, Movie movie2) {
+                return Double.compare(movie2.getVoteAverage(), movie1.getVoteAverage());
+            }
+        });
+    }
 }

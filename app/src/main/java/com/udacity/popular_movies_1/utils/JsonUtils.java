@@ -33,7 +33,7 @@ public final class JsonUtils {
                         movieJsonObj.getString(title),
                         movieJsonObj.getString(releaseDate),
                         movieJsonObj.getString(moviePoster),
-                        movieJsonObj.getString(voteAverage),
+                        movieJsonObj.getDouble(voteAverage),
                         movieJsonObj.getString(plotSypnosis)
                 );
                 movieList.add(movie);
