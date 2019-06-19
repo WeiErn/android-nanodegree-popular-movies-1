@@ -13,13 +13,13 @@ import java.util.Scanner;
 public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
-    private static final String THEMOVIEDB_URL = "https://api.themoviedb.org/3/movie/popular";
+    private static final String THEMOVIEDB_URL = "https://api.themoviedb.org/3/movie/";
     private static final String API_KEY = Constants.API_KEY;
 
     final static String API_PARAM = "api_key";
 
-    public static URL buildUrl() {
-        Uri builtUri = Uri.parse(THEMOVIEDB_URL).buildUpon()
+    public static URL buildUrl(String path) {
+        Uri builtUri = Uri.parse(THEMOVIEDB_URL + path).buildUpon()
                 .appendQueryParameter(API_PARAM, API_KEY)
                 .build();
 

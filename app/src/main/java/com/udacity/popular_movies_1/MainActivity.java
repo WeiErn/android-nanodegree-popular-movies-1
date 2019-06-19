@@ -1,5 +1,6 @@
 package com.udacity.popular_movies_1;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -23,25 +24,22 @@ import com.udacity.popular_movies_1.utils.JsonUtils;
 import com.udacity.popular_movies_1.utils.NetworkUtils;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.MovieAdapterOnClickHandler,
         LoaderCallbacks<List<Movie>> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String POPULAR = "popular";
+    private static final String TOP_RATED = "top_rated";
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
     private static final int MOVIE_LOADER_ID = 0;
-    private List<Movie> mMoviesSortedByPopularity;
-    private List<Movie> mMoviesSortedByRatings;
+    private List<Movie> mMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +60,17 @@ public class MainActivity extends AppCompatActivity implements
 
         int loaderId = MOVIE_LOADER_ID;
         LoaderCallbacks<List<Movie>> callback = MainActivity.this;
-        Bundle bundleForLoader = null;
+        Bundle bundleForLoader = new Bundle();
+        bundleForLoader.putString("path", POPULAR);
 
         getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
     }
 
+    @SuppressLint("StaticFieldLeak")
     @NonNull
     @Override
-    public Loader<List<Movie>> onCreateLoader(int id, @Nullable Bundle bundle) {
+    public Loader<List<Movie>> onCreateLoader(int id, @Nullable final Bundle bundle) {
+        final String path = bundle.getString("path");
 
         return new AsyncTaskLoader<List<Movie>>(this) {
             List<Movie> mMoviesData = null;
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
             @Nullable
             @Override
             public List<Movie> loadInBackground() {
-                URL moviesRequestUrl = NetworkUtils.buildUrl();
+                URL moviesRequestUrl = NetworkUtils.buildUrl(path);
 
                 try {
                     String jsonMoviesResponse = NetworkUtils
@@ -113,13 +114,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> movies) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mMoviesSortedByPopularity = movies;
+        mMovies = movies;
         mMovieAdapter.setMovieData(movies);
         if (null == movies) {
             showErrorMessage();
         } else {
             showMoviesDataView();
         }
+        getSupportLoaderManager().destroyLoader(MOVIE_LOADER_ID);
     }
 
     @Override
@@ -157,28 +159,21 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Bundle bundleForLoader = new Bundle();
+
         switch (item.getItemId()) {
             case R.id.action_sort_rated:
-                if (mMoviesSortedByRatings == null) {
-                    sortByRatingsDescending();
-                }
-                mMovieAdapter.setMovieData(mMoviesSortedByRatings);
+                bundleForLoader.putString("path", TOP_RATED);
+                getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, bundleForLoader, MainActivity.this);
+                mMovieAdapter.setMovieData(mMovies);
                 return true;
             case R.id.action_sort_popular:
-                mMovieAdapter.setMovieData(mMoviesSortedByPopularity);
+                bundleForLoader.putString("path", POPULAR);
+                getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, bundleForLoader, MainActivity.this);
+                mMovieAdapter.setMovieData(mMovies);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void sortByRatingsDescending() {
-        mMoviesSortedByRatings = new ArrayList<>(mMoviesSortedByPopularity);
-        Collections.sort(mMoviesSortedByRatings, new Comparator<Movie>() {
-            @Override
-            public int compare(Movie movie1, Movie movie2) {
-                return Double.compare(movie2.getVoteAverage(), movie1.getVoteAverage());
-            }
-        });
     }
 }
