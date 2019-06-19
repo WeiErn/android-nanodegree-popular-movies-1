@@ -19,34 +19,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private List<Movie> mMovieData;
     private final MovieAdapterOnClickHandler mClickHandler;
 
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        Movie movie = getItem(position);
-//
-//        if (convertView == null) {
-//            convertView = LayoutInflater.from(getContext()).inflate(R.layout.movie, parent, false);
-//        }
-//
-//        Uri uri = Uri.parse("http://image.tmdb.org/t/p/w185" + movie.moviePoster);
-//        ImageView moviePosterView = convertView.findViewById(R.id.movie_poster);
-//        moviePosterView.setImageURI(null);
-//        moviePosterView.setImageURI(uri);
-//
-//        TextView titleView = convertView.findViewById(R.id.movie_title);
-//        titleView.setText(movie.title);
-//
-//        TextView releaseDateView = convertView.findViewById(R.id.movie_release_date);
-//        releaseDateView.setText(movie.releaseDate);
-//
-//        TextView voteAverageView =  convertView.findViewById(R.id.movie_vote_average);
-//        voteAverageView.setText(String.valueOf(movie.voteAverage));
-//
-//        TextView plotSypnosisView = convertView.findViewById(R.id.movie_plot_sypnosis);
-//        plotSypnosisView.setText(movie.plotSypnosis);
-//
-//        return convertView;
-//    }
-
     public interface MovieAdapterOnClickHandler {
         void onClick(Movie movie);
     }
@@ -56,12 +28,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-//        public final TextView mMovieTitleTextView;
         public final ImageView mMoviePosterImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-//            mMovieTitleTextView = view.findViewById(R.id.movie_title);
             mMoviePosterImageView = view.findViewById(R.id.movie_poster);
             view.setOnClickListener(this);
         }
@@ -87,7 +57,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(@NonNull MovieAdapter.MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         Movie movieSelected = mMovieData.get(position);
-//        movieAdapterViewHolder.mMovieTitleTextView.setText(movieSelected.title);
 //        movieAdapterViewHolder.mMoviePosterImageView.setImageURI();
         Picasso.get().load(movieSelected.getMoviePoster()).into(movieAdapterViewHolder.mMoviePosterImageView);
     }
