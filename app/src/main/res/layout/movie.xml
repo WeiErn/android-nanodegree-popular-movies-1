@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:adjustViewBounds="true">
 
     <ImageView
         android:id="@+id/movie_poster"
@@ -16,13 +16,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!--<TextView-->
-        <!--android:id="@+id/movie_title"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--app:layout_constraintEnd_toEndOf="@+id/movie_poster"-->
-        <!--app:layout_constraintStart_toStartOf="@id/movie_poster"-->
-        <!--app:layout_constraintTop_toTopOf="@id/movie_poster"-->
-        <!--tools:text="placeholder movie title" />-->
+    <!--android:id="@+id/movie_title"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--app:layout_constraintEnd_toEndOf="@+id/movie_poster"-->
+    <!--app:layout_constraintStart_toStartOf="@id/movie_poster"-->
+    <!--app:layout_constraintTop_toTopOf="@id/movie_poster"-->
+    <!--tools:text="placeholder movie title" />-->
 
 </android.support.constraint.ConstraintLayout>

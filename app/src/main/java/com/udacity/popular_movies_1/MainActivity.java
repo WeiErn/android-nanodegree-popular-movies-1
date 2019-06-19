@@ -23,9 +23,11 @@ import com.udacity.popular_movies_1.utils.JsonUtils;
 import com.udacity.popular_movies_1.utils.NetworkUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.MovieAdapterOnClickHandler,
@@ -38,7 +40,8 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
     private static final int MOVIE_LOADER_ID = 0;
-    private List<Movie> mMovies;
+    private List<Movie> mMoviesSortedByPopularity;
+    private List<Movie> mMoviesSortedByRatings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(@NonNull Loader<List<Movie>> loader, List<Movie> movies) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mMovies = movies;
+        mMoviesSortedByPopularity = movies;
         mMovieAdapter.setMovieData(movies);
         if (null == movies) {
             showErrorMessage();
@@ -120,7 +123,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<List<Movie>> loader) { }
+    public void onLoaderReset(@NonNull Loader<List<Movie>> loader) {
+    }
 
     private void invalidateData() {
         mMovieAdapter.setMovieData(null);
@@ -155,10 +159,13 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort_rated:
-                sortByRatingsDescending();
-                mMovieAdapter.setMovieData(mMovies);
+                if (mMoviesSortedByRatings == null) {
+                    sortByRatingsDescending();
+                }
+                mMovieAdapter.setMovieData(mMoviesSortedByRatings);
                 return true;
             case R.id.action_sort_popular:
+                mMovieAdapter.setMovieData(mMoviesSortedByPopularity);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -166,7 +173,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void sortByRatingsDescending() {
-        Collections.sort(mMovies, new Comparator<Movie>() {
+        mMoviesSortedByRatings = new ArrayList<>(mMoviesSortedByPopularity);
+        Collections.sort(mMoviesSortedByRatings, new Comparator<Movie>() {
             @Override
             public int compare(Movie movie1, Movie movie2) {
                 return Double.compare(movie2.getVoteAverage(), movie1.getVoteAverage());
