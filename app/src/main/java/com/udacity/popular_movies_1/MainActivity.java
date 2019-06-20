@@ -3,6 +3,8 @@ package com.udacity.popular_movies_1;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
+    private TextView mNoInternetMessageDisplay;
     private ProgressBar mLoadingIndicator;
     private static final int MOVIE_LOADER_ID = 0;
     private List<Movie> mMovies;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView = findViewById(R.id.recyclerview);
         mErrorMessageDisplay = findViewById(R.id.error_message_display);
+        mNoInternetMessageDisplay = findViewById(R.id.no_internet_connection_message_display);
 
         GridLayoutManager layoutManager
                 = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
@@ -63,7 +67,11 @@ public class MainActivity extends AppCompatActivity implements
         Bundle bundleForLoader = new Bundle();
         bundleForLoader.putString("path", POPULAR);
 
-        getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
+        if (!isOnline()) {
+            showNoInternetConnectionMessage();
+        } else {
+            getSupportLoaderManager().initLoader(loaderId, bundleForLoader, callback);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -116,7 +124,9 @@ public class MainActivity extends AppCompatActivity implements
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mMovies = movies;
         mMovieAdapter.setMovieData(movies);
-        if (null == movies) {
+        if (!isOnline()) {
+            showNoInternetConnectionMessage();
+        } else if (null == movies) {
             showErrorMessage();
         } else {
             showMoviesDataView();
@@ -144,10 +154,18 @@ public class MainActivity extends AppCompatActivity implements
     private void showMoviesDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
+        mNoInternetMessageDisplay.setVisibility(View.INVISIBLE);
     }
 
     private void showErrorMessage() {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mNoInternetMessageDisplay.setVisibility(View.INVISIBLE);
+    }
+
+    private void showNoInternetConnectionMessage() {
+        mNoInternetMessageDisplay.setVisibility(View.VISIBLE);
+        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
@@ -176,4 +194,9 @@ public class MainActivity extends AppCompatActivity implements
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting(); }
 }
